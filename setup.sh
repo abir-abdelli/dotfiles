@@ -38,7 +38,7 @@ function apt_update_install_quiet() {
 
 # OS packages
 function install_os_packages() {
-    OS_PACKAGES_PART_1="apt-transport-https bat ca-certificates curl fzf git gnupg-agent guake htop httpie jq nmap "
+    OS_PACKAGES_PART_1="apt-transport-https bat ca-certificates curl fzf git gnupg-agent guake htop httpie jq nmap lsd"
     OS_PACKAGES_PART_2="neofetch powerline software-properties-common stow terminator tree unzip vim wget xclip zip zsh"
     #gnome-shell-pomodoro
     printf "${OS_PACKAGES_PART_1}\n"
@@ -117,28 +117,28 @@ function install_brave() {
 }
 
 # Element
-#function install_element() {
-#    log "Element"
-#    add_deb_repo "element-desktop" \
-#            "deb https://packages.riot.im/debian/ default main" \
-#            "https://packages.riot.im/debian/riot-im-archive-keyring.gpg" && \
-#    apt_update_install_quiet riot-desktop
-#}
+function install_element() {
+   log "Element"
+   add_deb_repo "element-desktop" \
+           "deb https://packages.riot.im/debian/ default main" \
+           "https://packages.riot.im/debian/riot-im-archive-keyring.gpg" && \
+   apt_update_install_quiet riot-desktop
+}
 
 # Shutter
-#function install_shutter() {
-#    log "Shutter"
-#    sudo add-apt-repository --update --yes ppa:linuxuprising/shutter > /dev/null && \
-#    apt_install_quiet shutter
-#}
+function install_shutter() {
+   log "Shutter"
+   sudo add-apt-repository --update --yes ppa:linuxuprising/shutter > /dev/null && \
+   apt_install_quiet shutter
+}
 
 # Etcher
-#function install_etcher() {
-#    log "Etcher"
-#    sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 379CE192D401AB61 && \
-#    add_deb_repo "balena-etcher" "deb https://deb.etcher.io stable etcher" && \
-#    apt_update_install_quiet balena-etcher-electron
-#}
+function install_etcher() {
+   log "Etcher"
+   sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com:443 --recv-keys 379CE192D401AB61 && \
+   add_deb_repo "balena-etcher" "deb https://deb.etcher.io stable etcher" && \
+   apt_update_install_quiet balena-etcher-electron
+}
 
 # Codium
 function install_vscodium() {
@@ -152,11 +152,24 @@ function install_vscodium() {
     done
 }
 
+#vsCode
+function install_vsCode() {
+    log "vsCode"
+    wget https://go.microsoft.com/fwlink/?LinkID=760868
+    wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+    sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+    sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+    rm -f packages.microsoft.gpg
+    sudo apt install apt-transport-https
+    sudo apt update
+    sudo apt install code
+}
+
 # Gitkraken
-#function install_gitkraken() {
-#    log "Gitkraken"
-#    sudo snap install gitkraken
-#}
+function install_gitkraken() {
+   log "Gitkraken"
+   sudo snap install gitkraken
+}
 
 # Postman
 function install_postman() {
@@ -172,35 +185,36 @@ function install_slack() {
 
 function main() {
     log_top_level "Install OS packages"
-    install_os_packages
+    # install_os_packages
 
-    log_top_level "Setup terminal"
-    setup_terminal
+    # log_top_level "Setup terminal"
+    # setup_terminal
 
-    log_top_level "Install dev tools"
-    install_docker
-    install_java
-    install_nodejs
-    #install_ansible
+    # log_top_level "Install dev tools"
+    # install_docker
+    # install_java
+    # install_nodejs
+    # #install_ansible
 
-    log_top_level "Install desktop apps"
-    install_brave
-    install_vscodium
-    install_postman
-    install_slack
-    #install_element
-    #install_shutter
+    # log_top_level "Install desktop apps"
+    # install_brave
+    # install_vscodium
+    # install_postman
+    # install_slack
+    # install_element
+    # install_shutter
     # install_etcher
-    #install_gitkraken
+    # install_gitkraken
+    install_vsCode
 
-    log_top_level "Populate dotfiles"
-    stow --ignore='.gitkeep' fonts git nvm ssh terminator vim themes
-    sudo fc-cache -f
-    # stow zsh
+    # log_top_level "Populate dotfiles"
+    # stow --ignore='.gitkeep' fonts git nvm ssh terminator vim themes
+    # sudo fc-cache -f
+    # # stow zsh
 
-    # git remote set-url origin git@github.com:zguesmi/dotfiles.git
-    # sudo apt install gnome-tweak-tool
-    # sudo apt install chrome-gnome-shell
+    git remote set-url origin git@github.com:zguesmi/dotfiles.git
+    sudo apt install gnome-tweak-tool
+    sudo apt install chrome-gnome-shell
 }
 
 main
